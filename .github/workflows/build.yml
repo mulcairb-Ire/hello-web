@@ -1,5 +1,10 @@
 name: Build Java Project
-
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  APPLICATION_NAME: ${{ vars.APPLICATION_NAME }}
+  ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
+  S3_BUCKET: ${{ vars.S3_BUCKET }}
+  
 on:
   push:
     branches:
@@ -21,12 +26,34 @@ jobs:
           distribution: corretto
           java-version: '17'
           cache: maven
+          
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::878145708291:role/GithubActions
+          aws-region: us-east-1     
 
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Upload WAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: hello-web-war
-          path: target/*.war
+        - name: Upload JAR
+                run: |
+                  aws s3 cp target/*.jar \
+                    s3://${{ env.S3_BUCKET }}/app-${{ github.sha }}.jar
+
+        - name: Create application version
+          run: |
+            aws elasticbeanstalk create-application-version \
+              --application-name "${{ env.APPLICATION_NAME }}" \
+              --version-label "${{ github.sha }}" \
+              --source-bundle \
+                S3Bucket=${{ env.S3_BUCKET }},S3Key=app-${{ github.sha }}.jar
+
+        - name: Deploy
+        run: |
+          aws elasticbeanstalk update-environment \
+            --environment-name "${{ env.ENVIRONMENT_NAME }}" \
+            --version-label "${{ github.sha }}"
+            
+            
+    
