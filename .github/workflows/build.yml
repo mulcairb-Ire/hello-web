@@ -74,7 +74,7 @@ jobs:
             --application-name "${{ env.APPLICATION_NAME }}" \
             --version-label "${{ github.sha }}" \
             --source-bundle \
-              S3Bucket=${{ env.S3_BUCKET }},S3Key=app-${{ github.sha }}.jar
+              S3Bucket=${{ env.S3_BUCKET }},S3Key=app-${{ github.sha }}.zip
 
       - name: Deploy
         run: |
