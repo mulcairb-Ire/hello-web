@@ -65,7 +65,7 @@ jobs:
         
       - name: Upload JAR
         run: |
-          aws s3 cp target/app.zip \
+          aws s3 cp app.zip \
             s3://${{ env.S3_BUCKET }}/app-${{ github.sha }}.jar
 
       - name: Create application version
