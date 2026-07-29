@@ -22,7 +22,7 @@ public class HelloServlet extends HttpServlet {
                 <title>GitHub Actions Demo</title>
             </head>
             <body>
-                <h1>Hello from Java V3!</h1>
+                <h1>Hello from Java V4!</h1>
                 <p>If you can see this page, the application is running.</p>
             </body>
             </html>
