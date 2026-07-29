@@ -7,7 +7,15 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        Server server = new Server(8080);
+        //Server server = new Server(8080);
+    	
+    	int port = Integer.parseInt(
+    		    System.getenv().getOrDefault("PORT", "5000"));
+
+		System.out.println("PORT env = " + System.getenv("PORT"));
+		System.out.println("Using port = " + port);
+
+    	Server server = new Server(port);
 
         ServletContextHandler context =
                 new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -20,7 +28,7 @@ public class Main {
 
         server.start();
 
-        System.out.println("Server running at http://localhost:8080");
+        System.out.println("Server running at port:"  + port);
 
         server.join();
     }
